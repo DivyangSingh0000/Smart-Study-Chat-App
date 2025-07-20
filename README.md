@@ -23,7 +23,7 @@ The application follows these steps to provide responses to your questions:
 
 ## Dependencies and Installation
 ----------------------------
-To install the MultiPDF Chat App, please follow these steps:
+To install the Smart Study Chat App, please follow these steps:
 
 1. Clone the repository to your local machine.
 
@@ -56,7 +56,7 @@ To use the Smart Study Chat App, follow these steps:
 
 ## Contributing
 ------------
-This repository is intended for educational purposes and does not accept further contributions. It serves as supporting material for a YouTube tutorial that demonstrates how to build this project. Feel free to utilize and enhance the app based on your own requirements.
+This repository is intended for educational purposes and does accept further contributions. It serves as supporting material for a github community that demonstrates how to build this project. Feel free to utilize and enhance the app based on your own requirements.
 
 ## License
 -------
