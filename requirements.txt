@@ -1,11 +1,12 @@
-langchain==0.0.184
-PyPDF2==3.0.1
-python-dotenv==1.0.0
-streamlit==1.18.1
-openai==0.27.6
-faiss-cpu==1.7.4
-altair==4
-tiktoken==0.4.0
-huggingface-hub==0.14.1
-InstructorEmbedding==1.0.1
-sentence-transformers==2.2.2
+# The original 2023 pins predate Python 3.13 and omit langchain-community,
+# even though it is imported by app.py.
+streamlit>=1.40,<2
+PyPDF2>=3.0,<4
+python-dotenv>=1.0,<2
+langchain>=0.3,<0.4
+langchain-community>=0.3,<0.4
+faiss-cpu>=1.9
+huggingface-hub>=0.25,<1
+InstructorEmbedding>=1.0.1
+sentence-transformers>=3,<4
+deep-translator>=1.11,<2
