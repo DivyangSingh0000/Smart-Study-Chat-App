@@ -54,6 +54,10 @@ To use the Smart Study Chat App, follow these steps:
 
 5. Ask questions in natural language about the loaded PDFs using the chat interface.
 
+## Smart Study Chat APP
+------------
+Visit smart study chat app at: https://smartstudy-00.streamlit.app/
+
 ## Contributing
 ------------
 This repository is intended for educational purposes and does accept further contributions. It serves as supporting material for a github community that demonstrates how to build this project. Feel free to utilize and enhance the app based on your own requirements.
