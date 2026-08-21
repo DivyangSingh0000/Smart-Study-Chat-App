@@ -13,14 +13,15 @@ import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 
-# Retained for compatibility with the original project API. The interactive UI
-# below uses metadata-aware chunks so it can always show the supporting page.
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceInstructEmbeddings
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import conversational_retrieval as ConversationRetrievalChain
-from langchain_community.llms import huggingface_hub
-from langchain_community.vectorstores import FAISS
+# Retained for compatibility with the original project API. These optional
+# dependencies are loaded only if a legacy helper is called; the active UI does
+# not need them during Streamlit startup.
+CharacterTextSplitter = None
+HuggingFaceInstructEmbeddings = None
+ConversationBufferMemory = None
+ConversationRetrievalChain = None
+huggingface_hub = None
+FAISS = None
 
 from htmlTemplates import css
 
@@ -51,7 +52,10 @@ def get_pdf_text(pdf_docs):
 
 def get_text_chunks(raw_text):
     """Return legacy chunks; the UI uses :func:`build_study_documents`."""
-    text_splitter = CharacterTextSplitter(
+    splitter_class = CharacterTextSplitter
+    if splitter_class is None:
+        from langchain.text_splitter import CharacterTextSplitter as splitter_class
+    text_splitter = splitter_class(
         separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len
     )
     return text_splitter.split_text(raw_text)
@@ -59,18 +63,32 @@ def get_text_chunks(raw_text):
 
 def get_vectorstore(text_chunks):
     """Original vector-store helper kept for users of the previous API."""
-    embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-    return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+    embedding_class = HuggingFaceInstructEmbeddings
+    vectorstore_class = FAISS
+    if embedding_class is None or vectorstore_class is None:
+        from langchain_community.embeddings import HuggingFaceInstructEmbeddings as embedding_class
+        from langchain_community.vectorstores import FAISS as vectorstore_class
+    embeddings = embedding_class(model_name="hkunlp/instructor-xl")
+    return vectorstore_class.from_texts(texts=text_chunks, embedding=embeddings)
 
 
 def get_conversation_chain(vectorstore):
     """Original Hugging Face chain helper kept for compatibility."""
-    llm = huggingface_hub.HuggingFaceHub(
+    hub_module = huggingface_hub
+    memory_class = ConversationBufferMemory
+    chain_module = ConversationRetrievalChain
+    if hub_module is None:
+        from langchain_community.llms import huggingface_hub as hub_module
+    if memory_class is None:
+        from langchain.memory import ConversationBufferMemory as memory_class
+    if chain_module is None:
+        from langchain.chains import conversational_retrieval as chain_module
+    llm = hub_module.HuggingFaceHub(
         repo_id="google/flan-t5-xl",
         model_kwargs={"temperature": 0.5, "max_length": 512},
     )
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    return ConversationRetrievalChain.from_llm(
+    memory = memory_class(memory_key="chat_history", return_messages=True)
+    return chain_module.from_llm(
         llm=llm, retriever=vectorstore.as_retriever(), memory=memory
     )
 
